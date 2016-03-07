@@ -1,5 +1,10 @@
 import subprocess
 import csv
+import codecs
+import sys 
+
+UTF8Writer = codecs.getwriter('utf8')
+sys.stdout = UTF8Writer(sys.stdout)
 
 def run_subprocess(cmd):
 	p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
@@ -57,3 +62,18 @@ def query_bq(qry):
 				rownum=rownum+1
 		if len(row)==1 and row[0].find("Current status: DONE") > 0:
 			header_found=False
+
+def output_qry_to_csv(qry,out_file):
+	rows = query_bq(qry)
+	rowcount=1
+	fieldnames=list()
+	outfile_handle = open(out_file,"wb")
+	csvwriter=None
+	for item in rows:
+		if rowcount==1:
+			fieldnames=item.keys()
+			csvwriter=csv.DictWriter(outfile_handle, fieldnames=fieldnames)
+			csvwriter.writerow(dict((fn,fn) for fn in fieldnames))
+		csvwriter.writerow(item)
+		rowcount=rowcount+1
+	outfile_handle.close()

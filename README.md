@@ -29,3 +29,5 @@ cp bqlib.py $dir
   name (tbl) using schema (schema).
 * remove_from_bq(obj): Removes an object (obj) from BQ repository.
 * query_bq(qry): Interactively runs BQ query (qry).
+* output_qry_to_csv(qry,out_file): Runs BQ query (qry), then outputs results to csv
+  file (out_file).
