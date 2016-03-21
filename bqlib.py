@@ -1,10 +1,6 @@
 import subprocess
 import csv
-import codecs
-import sys 
-
-UTF8Writer = codecs.getwriter('utf8')
-sys.stdout = UTF8Writer(sys.stdout)
+import sys
 
 def run_subprocess(cmd):
 	p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
@@ -39,7 +35,8 @@ def remove_from_bq(obj):
 def query_bq(qry):
 	encoding = 'utf-8'	  # specify the encoding of the CSV data
 	mycmd="bq query --max_rows=1000000000 --format=csv \"%s\"" % (qry)
-	print "Sending a query to subprocess:", mycmd
+	#print "Sending a query to subprocess:", mycmd
+	sys.stderr.write("Sending a query to subprocess:", mycmd,"\n")
 	p2 = subprocess.Popen(mycmd, stdout=subprocess.PIPE, shell=True, stderr=subprocess.STDOUT)
 	output = p2.communicate()[0].decode(encoding)
 	edits = csv.reader(output.splitlines(), delimiter=",")
@@ -63,8 +60,8 @@ def query_bq(qry):
 		if len(row)==1 and row[0].find("Current status: DONE") > 0:
 			header_found=False
 
-def output_qry_to_csv(qry,out_file):
-	rows = query_bq(qry)
+def output_csv(query,out_file):
+	rows = query_bq(query)
 	rowcount=1
 	fieldnames=list()
 	outfile_handle = open(out_file,"wb")
