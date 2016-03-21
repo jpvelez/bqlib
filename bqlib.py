@@ -5,38 +5,37 @@ import sys
 def run_subprocess(cmd):
 	p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
 	output = p.stdout.read()
-	print output
+	sys.stderr.write(output)
 
 def add_bq_dataset(dsname):
 	mycmd = "bq mk -d --data_location=EU %s" % (dsname)
-	print "Creating dataset " + dsname + " with " + mycmd
+	sys.stderr.write("Creating dataset " + dsname + " with " + mycmd+"\n")
 	run_subprocess(mycmd)
 		
 def add_bq_tbl_from_qry(qry, tbl):
 	mycmd = "bq query --allow_large_results --replace --destination_table="+tbl + " \"" + qry + "\""
-	print "For tbl " + tbl + " calling " + mycmd
+	sys.stderr.write("For tbl " + tbl + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
 def add_bq_vw_from_qry(qry, vw):
 	mycmd = "bq mk --view=\"" + qry + "\" -f " + vw
-	print "For view " + vw + " calling " + mycmd
+	sys.stderr.write("For view " + vw + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
 def add_bq_tbl_from_csv(file, tbl, schema):
 	mycmd = "bq load --encoding=UTF-8 --source_format=CSV \"" + tbl + "\" \"" + file + "\" \"" + schema + "\""	
-	print "For tbl " + tbl + " calling " + mycmd
+	sys.stderr.write("For tbl " + tbl + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
 def remove_from_bq(obj):
 	mycmd = "bq rm -f %s" % (obj)	
-	print "For obj " + obj + " calling " + mycmd
+	sys.stderr.write("For obj " + obj + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 	
 def query_bq(qry):
 	encoding = 'utf-8'	  # specify the encoding of the CSV data
 	mycmd="bq query --max_rows=1000000000 --format=csv \"%s\"" % (qry)
-	#print "Sending a query to subprocess:", mycmd
-	sys.stderr.write("Sending a query to subprocess:", mycmd,"\n")
+	sys.stderr.write("Sending a query to subprocess:"+mycmd+"\n")
 	p2 = subprocess.Popen(mycmd, stdout=subprocess.PIPE, shell=True, stderr=subprocess.STDOUT)
 	output = p2.communicate()[0].decode(encoding)
 	edits = csv.reader(output.splitlines(), delimiter=",")
