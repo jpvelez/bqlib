@@ -12,13 +12,19 @@ def add_bq_dataset(dsname):
 	sys.stderr.write("Creating dataset " + dsname + " with " + mycmd+"\n")
 	run_subprocess(mycmd)
 		
-def add_bq_tbl_from_qry(qry, tbl):
-	mycmd = "bq query --allow_large_results --replace --destination_table="+tbl + " \"" + qry + "\""
+def add_bq_tbl_from_qry(qry, tbl, *positional_parameters, **keyword_parameters):
+	udf_cmd=""
+	if ('udf' in keyword_parameters):
+		udf_cmd=" --udf_resource=\""+keyword_parameters['udf']+"\""
+	mycmd = "bq query --allow_large_results --replace --destination_table="+tbl + udf_cmd + " \"" + qry + "\""
 	sys.stderr.write("For tbl " + tbl + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
-def add_bq_vw_from_qry(qry, vw):
-	mycmd = "bq mk --view=\"" + qry + "\" -f " + vw
+def add_bq_vw_from_qry(qry, vw, *positional_parameters, **keyword_parameters):
+	udf_cmd=""
+	if ('udf' in keyword_parameters):
+		udf_cmd=" --view_udf_resource=\""+keyword_parameters['udf']+"\""
+	mycmd = "bq mk --view=\"" + qry + "\"" + udf_cmd + " -f " + vw
 	sys.stderr.write("For view " + vw + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
@@ -32,9 +38,12 @@ def remove_from_bq(obj):
 	sys.stderr.write("For obj " + obj + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 	
-def query_bq(qry):
+def query_bq(qry, *positional_parameters, **keyword_parameters):
+	udf_cmd=""
+	if ('udf' in keyword_parameters):
+		udf_cmd=" --udf_resource=\""+keyword_parameters['udf']+"\""
 	encoding = 'utf-8'	  # specify the encoding of the CSV data
-	mycmd="bq query --max_rows=1000000000 --format=csv \"%s\"" % (qry)
+	mycmd="bq query --max_rows=1000000000 --format=csv" + udf_cmd + " \"%s\"" % (qry)
 	sys.stderr.write("Sending a query to subprocess:"+mycmd+"\n")
 	p2 = subprocess.Popen(mycmd, stdout=subprocess.PIPE, shell=True, stderr=subprocess.STDOUT)
 	output = p2.communicate()[0].decode(encoding)
@@ -59,8 +68,8 @@ def query_bq(qry):
 		if len(row)==1 and row[0].find("Current status: DONE") > 0:
 			header_found=False
 
-def output_csv(query,out_file):
-	rows = query_bq(query)
+def output_csv(query,out_file, *positional_parameters, **keyword_parameters):
+	rows = query_bq(query, *positional_parameters, **keyword_parameters)
 	rowcount=1
 	fieldnames=list()
 	outfile_handle = open(out_file,"wb")
