@@ -1,4 +1,4 @@
-import subprocess
+
 import csv
 import sys
 
@@ -11,7 +11,7 @@ def add_bq_dataset(dsname):
 	mycmd = "bq mk -d --data_location=EU %s" % (dsname)
 	sys.stderr.write("Creating dataset " + dsname + " with " + mycmd+"\n")
 	run_subprocess(mycmd)
-		
+
 def add_bq_tbl_from_qry(qry, tbl, *positional_parameters, **keyword_parameters):
 	udf_cmd=""
 	if ('udf' in keyword_parameters):
@@ -29,15 +29,15 @@ def add_bq_vw_from_qry(qry, vw, *positional_parameters, **keyword_parameters):
 	run_subprocess(mycmd)
 
 def add_bq_tbl_from_csv(file, tbl, schema):
-	mycmd = "bq load --encoding=UTF-8 --source_format=CSV \"" + tbl + "\" \"" + file + "\" \"" + schema + "\""	
+	mycmd = "bq load --encoding=UTF-8 --source_format=CSV \"" + tbl + "\" \"" + file + "\" \"" + schema + "\""
 	sys.stderr.write("For tbl " + tbl + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
 
 def remove_from_bq(obj):
-	mycmd = "bq rm -f %s" % (obj)	
+	mycmd = "bq rm -f %s" % (obj)
 	sys.stderr.write("For obj " + obj + " calling " + mycmd+"\n")
 	run_subprocess(mycmd)
-	
+
 def query_bq(qry, *positional_parameters, **keyword_parameters):
 	udf_cmd=""
 	if ('udf' in keyword_parameters):
