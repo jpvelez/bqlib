@@ -14,6 +14,8 @@ this, just follow these instructions: https://cloud.google.com/compute/docs/tuto
 NOTE: Make sure that you add the BigQuery repository you want while running
 `gcloud init`.
 
+bqlib only works with python 2x.
+
 ## API docs
 
 bqlib supports the following API calls:
