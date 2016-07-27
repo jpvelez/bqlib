@@ -6,6 +6,6 @@ setup(name = 'bqlib',
       url = 'https://ghe.spotify.net/iananderson/bqlib',
       author = 'Manish Nag',
       author_email = 'manish@spotify.com',
-      keywords = ['BigQuery', 'Google Cloud Platform']
+      keywords = ['BigQuery', 'Google Cloud Platform'],
       license = 'MIT',
       packages = ['bqlib'])
