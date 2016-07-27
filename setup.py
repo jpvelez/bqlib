@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name = 'bqlib',
+setup(name = 'bq-lib',
       version = '0.1',
       description = 'A simple python wrapper for Google BigQuery',
       url = 'https://github.com/jpvelez/bqlib',
