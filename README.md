@@ -6,6 +6,8 @@ to tables, views, or csv files, upload csv files to BQ tables, delete tables,
 and more.
 
 ## Installation
+You can get bqlib from PyPi:
+`pip install bq-lib`
 
 For bqlib to work, it needs to be able to talk to BigQuery. To do that, you
 need to install Google Cloud SDK, get access to you GCP projects, install the
